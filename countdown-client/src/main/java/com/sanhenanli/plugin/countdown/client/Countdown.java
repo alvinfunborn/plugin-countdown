@@ -11,6 +11,12 @@ import com.sanhenanli.plugin.countdown.client.model.CountdownResult;
 public interface Countdown {
 
     /**
+     * 初始化倒计时
+     * @return 操作结果
+     */
+    CountdownResult init();
+
+    /**
      * 开启倒计时
      * @return 操作结果
      */

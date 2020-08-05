@@ -3,16 +3,25 @@ package com.sanhenanli.plugin.countdown.client;
 import com.sanhenanli.plugin.countdown.client.model.CountdownState;
 import com.sanhenanli.plugin.countdown.client.model.enums.CountdownStateEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * datetime 2020/8/3 16:53
+ * 倒计时上下文的内存实现
  *
  * @author zhouwenxiang
  */
-public class InMemoryCountdownContext implements CountdownContext {
+public class InMemoryCountdownContext extends AbstractCountdownContext {
 
-    protected List<CountdownState> states;
+    /**
+     * 状态列表
+     */
+    protected List<CountdownState> states = new ArrayList<>(2);
+
+    public InMemoryCountdownContext(String name) {
+        super(name);
+    }
 
     @Override
     public long getCurrentMillis() {
@@ -34,19 +43,11 @@ public class InMemoryCountdownContext implements CountdownContext {
         }
     }
 
-    /**
-     * 获取倒计时钟当前的状态
-     * @return 当前状态
-     */
     @Override
     public CountdownStateEnum getCurrentState() {
         return this.states.get(this.states.size() - 1).getState();
     }
 
-    /**
-     * 追加倒计时器经历的状态
-     * @param state 状态
-     */
     @Override
     public void appendCountdownState(CountdownState state) {
         this.states.add(state);

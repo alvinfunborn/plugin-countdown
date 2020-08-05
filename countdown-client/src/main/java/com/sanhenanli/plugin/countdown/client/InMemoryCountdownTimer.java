@@ -4,16 +4,22 @@ import com.sanhenanli.plugin.countdown.client.model.CountdownResult;
 
 /**
  * datetime 2020/8/3 10:09
- * 轮询倒数计时器
+ * 倒数计时器的内存实现
  *
  * @author zhouwenxiang
  */
-public class PollingInMemoryCountdownTimer extends AbstractInMemoryCountdownTimer {
+public class InMemoryCountdownTimer extends AbstractInMemoryCountdownTimer {
 
+    /**
+     * 记录精确的停止时间
+     */
     private long stopAt;
+    /**
+     * 记录所剩余的倒计时时间
+     */
     private long remainedMillis;
 
-    public PollingInMemoryCountdownTimer(String id, long millis) {
+    public InMemoryCountdownTimer(String id, long millis) {
         super(id, millis);
     }
 
@@ -25,6 +31,11 @@ public class PollingInMemoryCountdownTimer extends AbstractInMemoryCountdownTime
         } else {
             return new CountdownResult(false, "invalid millis");
         }
+    }
+
+    @Override
+    public CountdownResult init() {
+        return new CountdownResult(true);
     }
 
     @Override

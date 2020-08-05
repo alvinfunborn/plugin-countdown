@@ -1,4 +1,4 @@
-package com.sanhenanli.plugin.countdown.client.listener;
+package com.sanhenanli.plugin.countdown.client.observer;
 
 import com.sanhenanli.plugin.countdown.client.CountdownTimer;
 
@@ -8,7 +8,7 @@ import com.sanhenanli.plugin.countdown.client.CountdownTimer;
  *
  * @author zhouwenxiang
  */
-public interface CountdownListener {
+public interface CountdownObserver {
 
     /**
      * 初始化倒计时器

@@ -11,7 +11,7 @@ import com.sanhenanli.plugin.countdown.client.model.enums.CountdownStateEnum;
  */
 public class CountdownState {
 
-    protected String id;
+    protected String name;
     /**
      * 最近一次记录的倒计时剩余时间
      */
@@ -33,8 +33,8 @@ public class CountdownState {
      */
     protected long timestamp;
 
-    public CountdownState(String id, long millis, CountdownActionEnum action, CountdownResult actionResult, CountdownStateEnum state, long timestamp) {
-        this.id = id;
+    public CountdownState(String name, long millis, CountdownActionEnum action, CountdownResult actionResult, CountdownStateEnum state, long timestamp) {
+        this.name = name;
         this.millis = millis;
         this.action = action;
         this.actionResult = actionResult;
@@ -42,8 +42,8 @@ public class CountdownState {
         this.timestamp = timestamp;
     }
 
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public long getMillis() {
@@ -69,7 +69,7 @@ public class CountdownState {
     @Override
     public String toString() {
         return "CountdownState{" +
-                "id='" + id + '\'' +
+                "id='" + name + '\'' +
                 ", millis=" + millis +
                 ", action=" + action +
                 ", actionResult=" + actionResult +

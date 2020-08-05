@@ -1,41 +1,49 @@
 package com.sanhenanli.plugin.countdown.client.service;
 
+import com.sanhenanli.plugin.countdown.client.factory.CountdownSubjectFactory;
 import com.sanhenanli.plugin.countdown.client.model.CountdownResult;
 
 /**
  * datetime 2020/8/3 17:21
+ * 倒计时服务
  *
  * @author zhouwenxiang
  */
 public abstract class AbstractCountdownService implements CountdownService {
 
-    @Override
-    public CountdownResult start(String id) {
-        return getById(id).start();
+    protected CountdownSubjectFactory subjectFactory;
+
+    public AbstractCountdownService(CountdownSubjectFactory subjectFactory) {
+        this.subjectFactory = subjectFactory;
     }
 
     @Override
-    public CountdownResult cancel(String id) {
-        return getById(id).cancel();
+    public CountdownResult start(String name) {
+        return subjectFactory.getByName(name).start();
     }
 
     @Override
-    public CountdownResult suspend(String id) {
-        return getById(id).suspend();
+    public CountdownResult cancel(String name) {
+        return subjectFactory.getByName(name).cancel();
     }
 
     @Override
-    public CountdownResult resume(String id) {
-        return getById(id).resume();
+    public CountdownResult suspend(String name) {
+        return subjectFactory.getByName(name).suspend();
     }
 
     @Override
-    public CountdownResult reset(String id, long millis) {
-        return getById(id).reset(millis);
+    public CountdownResult resume(String name) {
+        return subjectFactory.getByName(name).resume();
     }
 
     @Override
-    public String log(String id) {
-        return getById(id).log();
+    public CountdownResult reset(String name, long millis) {
+        return subjectFactory.getByName(name).reset(millis);
+    }
+
+    @Override
+    public String log(String name) {
+        return subjectFactory.getByName(name).log();
     }
 }

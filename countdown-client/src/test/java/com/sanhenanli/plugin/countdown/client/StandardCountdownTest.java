@@ -1,7 +1,8 @@
 package com.sanhenanli.plugin.countdown.client;
 
-import com.sanhenanli.plugin.countdown.client.listener.AbstractPollingInMemoryCountdownListener;
-import com.sanhenanli.plugin.countdown.client.listener.CountdownListener;
+import com.sanhenanli.plugin.countdown.client.observer.AbstractObserver;
+import com.sanhenanli.plugin.countdown.client.observer.AbstractPollingInMemoryCountdownObserver;
+import com.sanhenanli.plugin.countdown.client.subject.StandardCountdownSubject;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -15,8 +16,8 @@ public class StandardCountdownTest {
 
     @Test
     public void test1() throws InterruptedException {
-        PollingInMemoryCountdownTimer countdownTimer = new PollingInMemoryCountdownTimer("countdown-1", 10000);
-        CountdownListener countdownListener = new AbstractPollingInMemoryCountdownListener("listener-1", 100) {
+        InMemoryCountdownTimer countdownTimer = new InMemoryCountdownTimer("countdown-1", 10000);
+        AbstractObserver countdownObserver = new AbstractPollingInMemoryCountdownObserver("listener-1", 100) {
 
             @Override
             public void onInit(CountdownTimer timer) {
@@ -54,7 +55,8 @@ public class StandardCountdownTest {
                 System.out.println("stop at " + LocalDateTime.now());
             }
         };
-        StandardCountdown countdown = new StandardCountdown(countdownTimer, countdownListener);
+        StandardCountdownSubject countdown = new StandardCountdownSubject(countdownTimer);
+        countdown.attach(countdownObserver);
 
         countdown.start();
         System.out.println(countdown.log());

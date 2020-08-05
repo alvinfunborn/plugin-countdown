@@ -11,22 +11,49 @@ public enum CountdownActionEnum {
     /**
      * 初始化
      */
-    RESET,
+    INIT(1),
+    /**
+     * 重置
+     */
+    RESET(6),
     /**
      * 开启
      */
-    START,
+    START(2),
     /**
      * 暂停
      */
-    SUSPEND,
+    SUSPEND(3),
     /**
      * 继续
      */
-    RESUME,
+    RESUME(4),
     /**
      * 取消
      */
-    CANCEL,
+    CANCEL(5),
+    /**
+     * 倒计时结束(非主动)
+     */
+    STOP(7),
     ;
+
+    private int code;
+
+    CountdownActionEnum(int code) {
+        this.code = code;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public static CountdownActionEnum getByCode(int code) {
+        for (CountdownActionEnum value : CountdownActionEnum.values()) {
+            if (value.code == code) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

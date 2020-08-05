@@ -1,135 +1,192 @@
-package com.sanhenanli.plugin.countdown.client;
+package com.sanhenanli.plugin.countdown.client.subject;
 
-import com.sanhenanli.plugin.countdown.client.listener.CountdownListener;
+import com.sanhenanli.plugin.countdown.client.AbstractCountdownTimer;
 import com.sanhenanli.plugin.countdown.client.model.CountdownResult;
 import com.sanhenanli.plugin.countdown.client.model.CountdownState;
 import com.sanhenanli.plugin.countdown.client.model.enums.CountdownActionEnum;
 import com.sanhenanli.plugin.countdown.client.model.enums.CountdownStateEnum;
 
+import java.util.List;
+
 /**
- * datetime 2019/5/9 17:03
+ * datetime 2020/8/4 11:05
+ * 标准倒计时subject
  *
- * @author sin5
+ * @author zhouwenxiang
  */
-public class StandardCountdown implements Countdown {
+public class StandardCountdownSubject extends AbstractCountdownSubject {
 
-    protected AbstractCountdownTimer countdownTimer;
-    protected CountdownListener countdownListener;
-
-    public StandardCountdown(AbstractCountdownTimer countdownTimer, CountdownListener countdownListener) {
-        this.countdownTimer = countdownTimer;
-        this.countdownListener = countdownListener;
-        countdownListener.onInit(countdownTimer);
+    public StandardCountdownSubject(AbstractCountdownTimer countdownTimer) {
+        super(countdownTimer);
     }
 
     @Override
-    public CountdownResult reset(long millis) {
-        CountdownResult result = countdownTimer.reset(millis);
-        CountdownStateEnum currentState = countdownTimer.getCurrentState();
-        long currentCountdownMillis;
+    public CountdownResult init() {
+        // 操作倒计时
+        CountdownResult result = countdownTimer.init();
+        CountdownStateEnum currentState;
         if (result.isOk()) {
-            currentCountdownMillis = millis;
-            countdownListener.onReset(countdownTimer);
+            currentState = CountdownStateEnum.INITED;
         } else {
-            currentCountdownMillis = countdownTimer.getCurrentMillis();
+            currentState = CountdownStateEnum.DEFINED;
         }
+        // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
-                countdownTimer.getId(),
-                currentCountdownMillis,
-                CountdownActionEnum.RESET,
+                countdownTimer.getName(),
+                countdownTimer.getCountdownMillis(),
+                CountdownActionEnum.INIT,
                 result,
                 currentState,
                 System.currentTimeMillis()
         ));
+        // 通知观察者
+        notifyObservers();
         return result;
     }
 
     @Override
     public CountdownResult start() {
+        // 操作倒计时
         CountdownResult result = countdownTimer.start();
         CountdownStateEnum currentState;
         if (result.isOk()) {
             currentState = CountdownStateEnum.RUNNING;
-            countdownListener.onStart(countdownTimer);
         } else {
             currentState = countdownTimer.getCurrentState();
         }
+        // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
-                countdownTimer.getId(),
-                countdownTimer.getCurrentMillis(),
+                countdownTimer.getName(),
+                countdownTimer.getCountdownMillis(),
                 CountdownActionEnum.START,
                 result,
                 currentState,
                 System.currentTimeMillis()
         ));
+        // 通知观察者
+        notifyObservers();
         return result;
     }
 
     @Override
     public CountdownResult cancel() {
+        // 操作倒计时
         CountdownResult result = countdownTimer.cancel();
         CountdownStateEnum currentState;
         if (result.isOk()) {
             currentState = CountdownStateEnum.CANCELED;
-            countdownListener.onCancel(countdownTimer);
         } else {
             currentState = countdownTimer.getCurrentState();
         }
+        // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
-                countdownTimer.getId(),
+                countdownTimer.getName(),
                 countdownTimer.getCurrentMillis(),
                 CountdownActionEnum.CANCEL,
                 result,
                 currentState,
                 System.currentTimeMillis()
         ));
+        // 通知观察者
+        notifyObservers();
         return result;
     }
 
     @Override
     public CountdownResult suspend() {
+        // 操作倒计时
         CountdownResult result = countdownTimer.suspend();
         CountdownStateEnum currentState;
         if (result.isOk()) {
             currentState = CountdownStateEnum.SUSPENDED;
-            countdownListener.onSuspend(countdownTimer);
         } else {
             currentState = countdownTimer.getCurrentState();
         }
+        // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
-                countdownTimer.getId(),
+                countdownTimer.getName(),
                 countdownTimer.getCurrentMillis(),
                 CountdownActionEnum.SUSPEND,
                 result,
                 currentState,
                 System.currentTimeMillis()
         ));
+        // 通知观察者
+        notifyObservers();
         return result;
     }
 
     @Override
     public CountdownResult resume() {
+        // 操作倒计时
         CountdownResult result = countdownTimer.resume();
         CountdownStateEnum currentState;
         if (result.isOk()) {
             currentState = CountdownStateEnum.RUNNING;
-            countdownListener.onResume(countdownTimer);
         } else {
             currentState = countdownTimer.getCurrentState();
         }
+        // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
-                countdownTimer.getId(),
+                countdownTimer.getName(),
                 countdownTimer.getCurrentMillis(),
                 CountdownActionEnum.RESUME,
                 result,
                 currentState,
                 System.currentTimeMillis()
         ));
+        // 通知观察者
+        notifyObservers();
+        return result;
+    }
+
+    @Override
+    public CountdownResult reset(long millis) {
+        // 操作倒计时
+        CountdownResult result = countdownTimer.reset(millis);
+        CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        long currentCountdownMillis;
+        if (result.isOk()) {
+            currentCountdownMillis = millis;
+        } else {
+            currentCountdownMillis = countdownTimer.getCurrentMillis();
+        }
+        // 记录状态
+        countdownTimer.appendCountdownState(new CountdownState(
+                countdownTimer.getName(),
+                currentCountdownMillis,
+                CountdownActionEnum.RESET,
+                result,
+                currentState,
+                System.currentTimeMillis()
+        ));
+        // 通知观察者
+        notifyObservers();
         return result;
     }
 
     @Override
     public String log() {
         return countdownTimer.log();
+    }
+
+    @Override
+    public long getCurrentMillis() {
+        return countdownTimer.getCurrentMillis();
+    }
+
+    @Override
+    public CountdownStateEnum getCurrentState() {
+        return countdownTimer.getCurrentState();
+    }
+
+    @Override
+    public void appendCountdownState(CountdownState state) {
+        countdownTimer.appendCountdownState(state);
+    }
+
+    @Override
+    public List<CountdownState> listStates() {
+        return countdownTimer.listStates();
     }
 }
