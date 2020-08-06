@@ -1,19 +1,19 @@
-package com.sanhenanli.plugin.countdown.client;
+package com.sanhenanli.plugin.countdown.client.subject;
 
+import com.sanhenanli.plugin.countdown.client.CountdownTimer;
+import com.sanhenanli.plugin.countdown.client.InMemoryCountdownTimer;
 import com.sanhenanli.plugin.countdown.client.observer.AbstractObserver;
 import com.sanhenanli.plugin.countdown.client.observer.AbstractPollingInMemoryCountdownObserver;
-import com.sanhenanli.plugin.countdown.client.subject.StandardCountdownSubject;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 /**
- * datetime 2020/8/3 9:53
+ * datetime 2020/8/5 17:52
  *
  * @author zhouwenxiang
  */
-public class StandardCountdownTest {
-
+public class StandardCountdownSubjectTest {
     @Test
     public void test1() throws InterruptedException {
         InMemoryCountdownTimer countdownTimer = new InMemoryCountdownTimer("countdown-1", 10000);
@@ -22,7 +22,6 @@ public class StandardCountdownTest {
             @Override
             public void onInit(CountdownTimer timer) {
                 System.out.println("init at " + LocalDateTime.now());
-                new Thread(() -> pollingCountdown(countdownTimer)).start();
             }
 
             @Override
@@ -33,6 +32,7 @@ public class StandardCountdownTest {
             @Override
             public void onStart(CountdownTimer timer) {
                 System.out.println("start at " + LocalDateTime.now());
+                new Thread(() -> pollingCountdown(countdownTimer)).start();
             }
 
             @Override
@@ -57,6 +57,7 @@ public class StandardCountdownTest {
         };
         StandardCountdownSubject countdown = new StandardCountdownSubject(countdownTimer);
         countdown.attach(countdownObserver);
+        countdown.init();
 
         countdown.start();
         System.out.println(countdown.log());
@@ -82,7 +83,7 @@ public class StandardCountdownTest {
         System.out.println(countdown.log());
         Thread.sleep(3000);
         System.out.println(countdown.log());
-        Thread.sleep(3000);
+        Thread.sleep(5000);
     }
 
 }
