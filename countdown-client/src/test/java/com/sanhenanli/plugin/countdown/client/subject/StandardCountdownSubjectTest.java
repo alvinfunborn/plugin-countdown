@@ -1,9 +1,8 @@
 package com.sanhenanli.plugin.countdown.client.subject;
 
 import com.sanhenanli.plugin.countdown.client.CountdownTimer;
-import com.sanhenanli.plugin.countdown.client.InMemoryCountdownTimer;
 import com.sanhenanli.plugin.countdown.client.observer.AbstractObserver;
-import com.sanhenanli.plugin.countdown.client.observer.AbstractPollingInMemoryCountdownObserver;
+import com.sanhenanli.plugin.countdown.client.observer.AbstractStandardCountdownObserver;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -16,8 +15,7 @@ import java.time.LocalDateTime;
 public class StandardCountdownSubjectTest {
     @Test
     public void test1() throws InterruptedException {
-        InMemoryCountdownTimer countdownTimer = new InMemoryCountdownTimer("countdown-1", 10000);
-        AbstractObserver countdownObserver = new AbstractPollingInMemoryCountdownObserver("listener-1", 100) {
+        AbstractObserver countdownObserver = new AbstractStandardCountdownObserver("listener-1") {
 
             @Override
             public void onInit(CountdownTimer timer) {
@@ -32,7 +30,6 @@ public class StandardCountdownSubjectTest {
             @Override
             public void onStart(CountdownTimer timer) {
                 System.out.println("start at " + LocalDateTime.now());
-                new Thread(() -> pollingCountdown(countdownTimer)).start();
             }
 
             @Override
@@ -55,7 +52,7 @@ public class StandardCountdownSubjectTest {
                 System.out.println("stop at " + LocalDateTime.now());
             }
         };
-        StandardCountdownSubject countdown = new StandardCountdownSubject(countdownTimer);
+        StandardCountdownSubject countdown = new InMemoryCountdownSubject("countdown-1", 100000, 100);
         countdown.attach(countdownObserver);
         countdown.init();
 
@@ -86,4 +83,107 @@ public class StandardCountdownSubjectTest {
         Thread.sleep(5000);
     }
 
+    @Test
+    public void test2() throws InterruptedException {
+        AbstractObserver countdownObserver = new AbstractStandardCountdownObserver("listener-1") {
+
+            @Override
+            public void onInit(CountdownTimer timer) {
+                System.out.println("init at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onReset(CountdownTimer timer) {
+                System.out.println("reset at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onStart(CountdownTimer timer) {
+                System.out.println("start at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onSuspend(CountdownTimer timer) {
+                System.out.println("suspend at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onResume(CountdownTimer timer) {
+                System.out.println("resume at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onCancel(CountdownTimer timer) {
+                System.out.println("cancel at " + LocalDateTime.now());
+            }
+
+            @Override
+            public void onStop(CountdownTimer timer) {
+                System.out.println("stop at " + LocalDateTime.now());
+            }
+        };
+        StandardCountdownSubject countdown = new InMemoryCountdownSubject("countdown-1", 100000, 100);
+        countdown.attach(countdownObserver);
+
+        Thread t1 = new Thread(() -> {
+            countdown.init();
+        });
+        Thread t2 = new Thread(() -> {
+            countdown.start();
+            System.out.println(countdown.log());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            countdown.suspend();
+            System.out.println(countdown.log());
+        });
+        Thread t3 = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            countdown.resume();
+            System.out.println(countdown.log());
+        });
+        Thread t4 = new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            countdown.suspend();
+            System.out.println(countdown.log());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(countdown.log());
+            countdown.reset(5000);
+        });
+        Thread t5 = new Thread(() -> {
+            System.out.println(countdown.log());
+            try {
+                Thread.sleep(9000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            countdown.resume();
+        });
+
+        t1.start();
+        t1.join();
+        t2.start();
+        t3.start();
+        t4.start();
+        t5.start();
+        t2.join();
+        t3.join();
+        t4.join();
+        t5.join();
+        Thread.sleep(12000);
+    }
 }

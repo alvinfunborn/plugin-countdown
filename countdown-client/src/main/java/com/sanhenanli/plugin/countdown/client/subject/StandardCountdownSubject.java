@@ -46,13 +46,16 @@ public class StandardCountdownSubject extends AbstractCountdownSubject {
 
     @Override
     public CountdownResult start() {
-        // 操作倒计时
-        CountdownResult result = countdownTimer.start();
-        CountdownStateEnum currentState;
+        CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        CountdownResult result;
+        if (currentState != CountdownStateEnum.INITED) {
+            result = new CountdownResult(false, "illegal lifecycle");
+        } else {
+            // 操作倒计时
+            result = countdownTimer.start();
+        }
         if (result.isOk()) {
             currentState = CountdownStateEnum.RUNNING;
-        } else {
-            currentState = countdownTimer.getCurrentState();
         }
         // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
@@ -70,13 +73,16 @@ public class StandardCountdownSubject extends AbstractCountdownSubject {
 
     @Override
     public CountdownResult cancel() {
-        // 操作倒计时
-        CountdownResult result = countdownTimer.cancel();
-        CountdownStateEnum currentState;
+        CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        CountdownResult result;
+        if (currentState != CountdownStateEnum.INITED && currentState != CountdownStateEnum.RUNNING && currentState != CountdownStateEnum.SUSPENDED) {
+            result = new CountdownResult(false, "illegal lifecycle");
+        } else {
+            // 操作倒计时
+            result = countdownTimer.cancel();
+        }
         if (result.isOk()) {
             currentState = CountdownStateEnum.CANCELED;
-        } else {
-            currentState = countdownTimer.getCurrentState();
         }
         // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
@@ -94,13 +100,16 @@ public class StandardCountdownSubject extends AbstractCountdownSubject {
 
     @Override
     public CountdownResult suspend() {
-        // 操作倒计时
-        CountdownResult result = countdownTimer.suspend();
-        CountdownStateEnum currentState;
+        CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        CountdownResult result;
+        if (currentState != CountdownStateEnum.RUNNING) {
+            result = new CountdownResult(false, "illegal lifecycle");
+        } else {
+            // 操作倒计时
+            result = countdownTimer.suspend();
+        }
         if (result.isOk()) {
             currentState = CountdownStateEnum.SUSPENDED;
-        } else {
-            currentState = countdownTimer.getCurrentState();
         }
         // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
@@ -118,13 +127,16 @@ public class StandardCountdownSubject extends AbstractCountdownSubject {
 
     @Override
     public CountdownResult resume() {
-        // 操作倒计时
-        CountdownResult result = countdownTimer.resume();
-        CountdownStateEnum currentState;
+        CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        CountdownResult result;
+        if (currentState != CountdownStateEnum.SUSPENDED) {
+            result = new CountdownResult(false, "illegal lifecycle");
+        } else {
+            // 操作倒计时
+            result = countdownTimer.resume();
+        }
         if (result.isOk()) {
             currentState = CountdownStateEnum.RUNNING;
-        } else {
-            currentState = countdownTimer.getCurrentState();
         }
         // 记录状态
         countdownTimer.appendCountdownState(new CountdownState(
@@ -142,9 +154,14 @@ public class StandardCountdownSubject extends AbstractCountdownSubject {
 
     @Override
     public CountdownResult reset(long millis) {
-        // 操作倒计时
-        CountdownResult result = countdownTimer.reset(millis);
         CountdownStateEnum currentState = countdownTimer.getCurrentState();
+        CountdownResult result;
+        if (currentState != CountdownStateEnum.INITED && currentState != CountdownStateEnum.RUNNING && currentState != CountdownStateEnum.SUSPENDED) {
+            result = new CountdownResult(false, "illegal lifecycle");
+        } else {
+            // 操作倒计时
+            result = countdownTimer.reset(millis);
+        }
         long currentCountdownMillis;
         if (result.isOk()) {
             currentCountdownMillis = millis;

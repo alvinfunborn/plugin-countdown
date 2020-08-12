@@ -3,8 +3,8 @@ package com.sanhenanli.plugin.countdown.client;
 import com.sanhenanli.plugin.countdown.client.model.CountdownState;
 import com.sanhenanli.plugin.countdown.client.model.enums.CountdownStateEnum;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * datetime 2020/8/3 16:53
@@ -17,7 +17,7 @@ public class InMemoryCountdownContext extends AbstractCountdownContext {
     /**
      * 状态列表
      */
-    protected List<CountdownState> states = new ArrayList<>(2);
+    protected List<CountdownState> states = new CopyOnWriteArrayList<>();
 
     public InMemoryCountdownContext(String name) {
         super(name);
