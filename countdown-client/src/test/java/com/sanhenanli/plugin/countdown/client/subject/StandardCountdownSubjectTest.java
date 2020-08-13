@@ -52,7 +52,7 @@ public class StandardCountdownSubjectTest {
                 System.out.println("stop at " + LocalDateTime.now());
             }
         };
-        StandardCountdownSubject countdown = new InMemoryPollingCountdownSubject("countdown-1", 10000, 100);
+        StandardCountdownSubject countdown = new InMemoryDelayQueueCountdownSubject("countdown-1", 10000);
         countdown.attach(countdownObserver);
         countdown.init();
 
@@ -122,7 +122,7 @@ public class StandardCountdownSubjectTest {
                 System.out.println("stop at " + LocalDateTime.now());
             }
         };
-        StandardCountdownSubject countdown = new InMemoryPollingCountdownSubject("countdown-1", 10000, 100);
+        StandardCountdownSubject countdown = new InMemoryDelayQueueCountdownSubject("countdown-1", 10000);
         countdown.attach(countdownObserver);
 
         Thread t1 = new Thread(() -> {
