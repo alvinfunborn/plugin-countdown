@@ -33,6 +33,7 @@ public class InMemoryCountdownContext extends AbstractCountdownContext {
             }
         }
         switch (currentState.getState()) {
+            case INITED:
             case STOPPED:
             case CANCELED:
             case SUSPENDED:

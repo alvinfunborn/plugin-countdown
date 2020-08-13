@@ -6,11 +6,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * datetime 2020/8/3 10:09
- * 倒数计时器的内存实现
+ * 单机倒计时器, 自标记两个参量方便轮询
  *
  * @author zhouwenxiang
  */
-public class InMemoryCountdownTimer extends AbstractInMemoryCountdownTimer {
+public class InMemoryPollingCountdownTimer extends AbstractInMemoryCountdownTimer {
 
     /**
      * 记录精确的停止时间
@@ -21,7 +21,7 @@ public class InMemoryCountdownTimer extends AbstractInMemoryCountdownTimer {
      */
     private AtomicLong remainedMillis = new AtomicLong(0);
 
-    public InMemoryCountdownTimer(String name, long millis) {
+    public InMemoryPollingCountdownTimer(String name, long millis) {
         super(name, millis);
     }
 
