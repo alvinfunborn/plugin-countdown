@@ -1,8 +1,8 @@
-package com.sanhenanli.plugin.countdown.persist.jpa.factory;
+package com.sanhenanli.plugin.countdown.impl.factory;
 
 import com.sanhenanli.plugin.countdown.client.factory.CountdownObserverFactory;
 import com.sanhenanli.plugin.countdown.client.observer.AbstractCountdownObserver;
-import com.sanhenanli.plugin.countdown.persist.jpa.observer.TestCountdownObserver;
+import com.sanhenanli.plugin.countdown.impl.observer.TestCountdownObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;

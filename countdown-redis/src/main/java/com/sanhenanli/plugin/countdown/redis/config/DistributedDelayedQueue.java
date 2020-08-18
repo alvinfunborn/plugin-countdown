@@ -42,6 +42,7 @@ public class DistributedDelayedQueue {
         String profilesActive = environment.getProperty("spring.profiles.active");
         // redisson包装主键为redisson_delay_quque:{name}和redisson_delay_quque_timeout:{name}
         blockingFairQueue = redissonClient.getBlockingQueue(applicationName + "-" + profilesActive);
+        // 获取或创建delayedQueue, 不需要销毁
         delayedQueue = redissonClient.getDelayedQueue(blockingFairQueue);
         // 开启消费延时队列的线程
         Thread consumer = new Thread(this::consume);

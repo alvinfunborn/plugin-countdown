@@ -1,8 +1,9 @@
-package com.sanhenanli.plugin.countdown.persist.jpa.observer;
+package com.sanhenanli.plugin.countdown.impl.observer;
 
 import com.sanhenanli.plugin.countdown.client.CountdownTimer;
 import com.sanhenanli.plugin.countdown.client.observer.AbstractStandardCountdownObserver;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * datetime 2020/8/4 17:12
@@ -10,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author zhouwenxiang
  */
-@Slf4j
 public class TestCountdownObserver extends AbstractStandardCountdownObserver {
+
+    private Logger log = LoggerFactory.getLogger(TestCountdownObserver.class);
 
     public TestCountdownObserver(String name) {
         super(name);

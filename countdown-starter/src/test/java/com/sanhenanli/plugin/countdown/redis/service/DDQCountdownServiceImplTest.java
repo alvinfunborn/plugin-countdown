@@ -1,8 +1,7 @@
 package com.sanhenanli.plugin.countdown.redis.service;
 
 import com.sanhenanli.plugin.countdown.CountdownApplicationTest;
-import com.sanhenanli.plugin.countdown.client.subject.AbstractCountdownSubject;
-import com.sanhenanli.plugin.countdown.persist.jpa.observer.TestCountdownObserver;
+import com.sanhenanli.plugin.countdown.client.factory.CountdownObserverFactory;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,13 +17,14 @@ public class DDQCountdownServiceImplTest extends CountdownApplicationTest {
     @Autowired
     private DDQCountdownServiceImpl countdownService;
     @Autowired
-    private TestCountdownObserver testCountdownObserver;
+    private CountdownObserverFactory countdownObserverFactory;
 
     @Test
     public void test1() {
         try {
-            String name = "redisson-countdown-test-5";
-            AbstractCountdownSubject countdown = countdownService.create(name, 30000, Collections.singletonList(testCountdownObserver));
+            String name = "redisson-countdown-test-9";
+            // 创建该name的倒计时subject, 并依附上test观察者
+            countdownService.create(name, 30000, Collections.singletonList(countdownObserverFactory.getByName("test")));
             countdownService.start(name);
             Thread.sleep(2000);
             countdownService.suspend(name);
